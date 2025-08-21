@@ -12,18 +12,32 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Cache backend npm cache
+        uses: actions/cache@v4
+        with:
+          path: apps/backend/.npm
+          key: ${{ runner.os }}-backend-npm-${{ hashFiles('apps/backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-npm-
       - name: Backend deps
         run: |
           cd apps/backend
-          npm ci || npm install
+          npm install --no-audit --no-fund --prefer-offline --cache .npm
       - name: Backend build
         run: |
           cd apps/backend
           npm run build || npx tsc
+      - name: Cache frontend npm cache
+        uses: actions/cache@v4
+        with:
+          path: apps/frontend/.npm
+          key: ${{ runner.os }}-frontend-npm-${{ hashFiles('apps/frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-npm-
       - name: Frontend deps
         run: |
           cd apps/frontend
-          npm ci || npm install
+          npm install --no-audit --no-fund --prefer-offline --cache .npm
       - name: Frontend build
         run: |
           cd apps/frontend
