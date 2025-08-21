@@ -12,6 +12,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Cache backend node_modules
+        uses: actions/cache@v4
+        with:
+          path: apps/backend/node_modules
+          key: ${{ runner.os }}-backend-modules-${{ hashFiles('apps/backend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-backend-modules-
       - name: Cache backend npm cache
         uses: actions/cache@v4
         with:
@@ -27,6 +34,13 @@ jobs:
         run: |
           cd apps/backend
           npm run build || npx tsc
+      - name: Cache frontend node_modules
+        uses: actions/cache@v4
+        with:
+          path: apps/frontend/node_modules
+          key: ${{ runner.os }}-frontend-modules-${{ hashFiles('apps/frontend/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-frontend-modules-
       - name: Cache frontend npm cache
         uses: actions/cache@v4
         with:
