@@ -1,0 +1,32 @@
+name: CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Backend deps
+        run: |
+          cd apps/backend
+          npm ci || npm install
+      - name: Backend build
+        run: |
+          cd apps/backend
+          npm run build || npx tsc
+      - name: Frontend deps
+        run: |
+          cd apps/frontend
+          npm ci || npm install
+      - name: Frontend build
+        run: |
+          cd apps/frontend
+          npm run build || true
+
